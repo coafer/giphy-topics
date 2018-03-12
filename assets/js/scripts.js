@@ -1,8 +1,8 @@
 // Initial array of topics
-var topics = ["fish","dog","tiger","wolf","pangolin","koala","rhino","fox","mantis"];
+var topics = ["fish", "dog", "tiger", "wolf", "pangolin", "koala", "rhino", "fox", "mantis"];
 
 // display animalInfo function re-renders the HTML to display the appropriate content
-function displayanimalInfo(){
+function displayanimalInfo() {
     var animal = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&api_key=TxasiTtyjmI00B0foqv5g8CPJcoETEvn&limit=10";
 
@@ -10,26 +10,29 @@ function displayanimalInfo(){
     $.ajax({
          url: queryURL,
          method: 'GET'
-        }).then(function(response){
-        console.log(response);
+        }).then(displayImg);
 
-        // Creating a div to hold the pictures
-        var animalDiv = $("#topics-view").empty();
+}
 
-        //Print the images on the DOM
-        for (i = 0; i < 10; i++){
+var displayImg = function(response){
+    console.log(response);
 
-            //store the animated url    
-            var imgAnimated = response.data[i].images.fixed_height.url;
+    // Creating a div to hold the pictures
+    var animalDiv = $("#topics-view").empty();
 
-            //store the still url    
-            var imgStill = response.data[i].images.fixed_height_still.url;
+    //Print the images on the DOM
+    for (i = 0; i < 10; i++){
 
-            //Place the gifs inside #animalDiv
-            animalDiv.append("<img src='" + imgAnimated + "'data-still='" + imgStill + "' data-animated='" + imgAnimated + "' >");
-        }   
-    });
+        //store the animated ,still url and also rating    
+        var imgAnimated = response.data[i].images.fixed_height.url,
+            imgStill = response.data[i].images.fixed_height_still.url,
+            rating = response.data[i].rating,
+            p = $("<p>").text("Rating: " + rating);
 
+        //Place the gifs inside #animalDiv
+        animalDiv.append("<img src='" + imgStill + "'data-still='" + imgStill + "' data-animated='" + imgAnimated + "' >").append(p);
+        
+    }   
 }
 
   // Function for displaying animal data
@@ -92,5 +95,5 @@ $("#topics-view").delegate("img", "click", function(){
     var still = $(this).data("still");
     var currentState = $(this).attr("src");
 
-    currentState === anime ? img.attr("src", still) : img.attr("src", anime);
+    currentState === still ? img.attr("src", anime) : img.attr("src", still);
 });
